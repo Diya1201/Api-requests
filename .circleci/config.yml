@@ -39,12 +39,25 @@ jobs:
             pytest --junitxml=test-results/junit.xml gtest.py
       - store_test_results:
           path: test-results
-
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+  ghub-api:
+    docker:
+      - image: cimg/python:3.10.2
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+          args: pytest
+      - run:
+          name: Run tests
+          command: |
+            pip install pytest
+            pytest --junitxml=test-results/junit.xml gtest.py
+      - store_test_results:
+          path: test-results
 workflows:
   testing-gitapi: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
+      - ghub-api
 
